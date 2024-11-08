@@ -24,22 +24,22 @@ if (isset($_POST['sign_up'])) {
     }
 }
 
-
 if (isset($_POST['sign_in'])) {
     $email = $_POST['userEmail'];
     $password = $_POST['userPassword'];
 
     // Prepare SQL query
-    $sql = "SELECT name, password FROM user WHERE email = '$email'";
+    $sql = "SELECT id, name, password FROM user WHERE email = '$email'";
     $result = $conn->query($sql);
-    
+
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $storedPassword = $row['password'];
         
         // Verify the password
         if ($storedPassword === $password) {
-            $_SESSION['name'] = $row['name']; // Set session variable
+            $_SESSION['name'] = $row['name'];
+            $_SESSION['userid'] = $row['id']; // Set the userid in session
             echo "<script>alert('Login successful!');</script>";
             header("Location: index.php");
             exit();
@@ -52,5 +52,4 @@ if (isset($_POST['sign_in'])) {
         echo "<script>window.location.href = 'index.php';</script>"; // Redirect to index.php
     }
 }
-
 ?>

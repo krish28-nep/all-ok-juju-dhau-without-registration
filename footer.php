@@ -1,3 +1,8 @@
+<?php 
+include("database/connect.php");
+
+?>
+
 <footer>
     <div class="footerLeft">
         <div class="footerMenu">
@@ -5,17 +10,33 @@
             <ul class="fList">
                 <li class="fListItem"><a href="#">About us</a></li>
                 <li class="fListItem"><a href="#">Contact us</a></li>
-                <li class="fListItem"><a href="#">shop list</a></li>
+                <li class="fListItem"><a href="shop_list.php">shop list</a></li>
             </ul>
         </div>
         <div class="footerMenu">
             <h1 class="fMenuTitle">Products</h1>
             <ul class="fList">
-                <li class="fListItem">Matka-Dhau</li>
-                <li class="fListItem">Kalla-Dhau</li>
-                <li class="fListItem">Cup-Dhau</li>
-                <li class="fListItem">Plastic-Dhau</li>
-                <li class="fListItem">Special-Combo</li>
+            <?php 
+                $titleQuery = "SELECT * FROM products";
+                $result = mysqli_query($conn, $titleQuery);
+                
+                if ($result) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $title = $row['list_title'];
+                        $productId = $row['product_id']; // Use the correct column name for product ID
+                        $productTitle = $row['title'];   // Use the correct column name for the product title
+
+                        // Output each title as a list item with proper concatenation
+                        echo "<li class='fListItem'>
+                                <a href='product-single-page.php?id=" . $productId . "' title='" . htmlspecialchars($productTitle) . "'>
+                                    $title
+                                </a>
+                            </li>";
+                    }
+                } else {
+                    echo "Error fetching titles: " . mysqli_error($conn);
+                }
+            ?>
             </ul>
         </div>
     </div>
@@ -42,9 +63,11 @@
         </div>
     </div>
 </footer>
+<script src="js/jquery.js"></script>
 <script src="js/user_login.js"></script>
-<script src="js/script.js"></script>
 <script src="js/product.js"></script>
+<script src="js/search.js"></script>
+<script src="js/script.js"></script>
 
 </body>
 

@@ -1,5 +1,5 @@
 <?php
-@session_start();
+include("header.php");
 include("database/connect.php");
 
 // Check if the user is logged in
@@ -27,20 +27,32 @@ if ($result->num_rows > 0) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>User Profile</h1>
-    <p><strong>Name:</strong> <?php echo htmlspecialchars($name); ?></p>
-    <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
-    <p><strong>Contact Number:</strong> <?php echo htmlspecialchars($contact); ?></p>
-    <p><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
-
-    <a href="edit_profile.php">Edit Profile</a> | <a href="logout.php">Log Out</a>
+    <div class="profile-container">
+        <h1 class="profile-heading">User Profile</h1>
+        <div class="profile-details">
+            <p class="profile-item"><strong>Name:</strong> <?php echo htmlspecialchars($name); ?></p>
+            <p class="profile-item"><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
+            <p class="profile-item"><strong>Contact Number:</strong> <?php echo htmlspecialchars($contact); ?></p>
+            <p class="profile-item"><strong>Address:</strong> <?php echo htmlspecialchars($address); ?></p>
+        </div>
+        <div class="profile-actions">
+            <a href="edit_profile.php" class="button-link">Edit Profile</a>
+            <span> | </span>
+            <a href="logout.php" class="button-link">Log Out</a>
+            <br><br> <!-- Add some space or style as needed -->
+            <!-- Link to the Delete Account page -->
+            <a href="delete_account.php" class="button-link delete-link">Delete Account</a>
+        </div>
+    </div>
 </body>
 </html>
+<?php include("footer.php"); ?>
+

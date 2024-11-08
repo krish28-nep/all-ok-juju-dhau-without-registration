@@ -1,5 +1,5 @@
 <?php
-@session_start();
+include("header.php");
 include("database/connect.php");
 
 // Check if the user is logged in
@@ -29,7 +29,6 @@ if (isset($_POST['confirm_delete'])) {
         echo "<script>window.location.href = 'user_profile.php';</script>"; // Redirect to profile page if error
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -37,14 +36,21 @@ if (isset($_POST['confirm_delete'])) {
 <head>
     <meta charset="UTF-8">
     <title>Delete Account</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Delete Account</h1>
-    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+    <div class="profile-container">
+        <h1 class="profile-heading">Delete Account</h1>
+        <p class="warning-text">Are you sure you want to delete your account? This action cannot be undone.</p>
 
-    <form method="POST" action="">
-        <button type="submit" name="confirm_delete">Yes, Delete My Account</button>
-        <a href="user_profile.php">Cancel</a>
-    </form>
+        <form method="POST" action="" class="profile-form">
+            <div class="profile-actions">
+                <button type="submit" name="confirm_delete" class="button-link delete-button">Yes, Delete My Account</button>
+                <a href="user_profile.php" class="button-link">Cancel</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
+
+<?php include("footer.php"); ?>
