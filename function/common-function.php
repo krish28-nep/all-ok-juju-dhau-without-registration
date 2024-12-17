@@ -1,7 +1,7 @@
 <?php
 include("database/connect.php");
 
-function total_product_cart()
+function total_product_cart(): void
 {
     if (isset($_SESSION["userid"])) {
         global $conn;

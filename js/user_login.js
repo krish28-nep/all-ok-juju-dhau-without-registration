@@ -74,103 +74,103 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // Validation functions
-    function validateUsername() {
-        const nameInput = form.querySelector('input[name="userName"]');
-        const nameError = document.getElementById("nameError");
-        if (nameInput.value.trim().length < 3) {
-            nameError.textContent = "Name must be at least 3 characters long.";
-            return false;
-        } else {
-            nameError.textContent = "";
-            return true;
-        }
+   // Validation functions
+function validateUsername() {
+    const nameInput = form.querySelector('input[name="userName"]');
+    const nameError = document.getElementById("nameError");
+    if (nameInput.value.trim().length < 3) {
+        nameError.textContent = "Name must be at least 3 characters long.";
+        return false;
+    } else {
+        nameError.textContent = "";
+        return true;
+    }
+}
+
+function validateEmail() {
+    const emailInput = form.querySelector('input[name="userEmail"]');
+    const emailError = document.getElementById("emailError");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value.trim())) {
+        emailError.textContent = "Enter a valid email address.";
+        return false;
+    } else {
+        emailError.textContent = "";
+        return true;
+    }
+}
+
+function validatePassword() {
+    const passwordInput = form.querySelector('input[name="userPassword"]');
+    const passwordError = document.getElementById("passwordError");
+    if (passwordInput.value.trim().length < 6) {
+        passwordError.textContent = "Password must be at least 6 characters long.";
+        return false;
+    } else {
+        passwordError.textContent = "";
+        return true;
+    }
+}
+
+function validatePhoneNumber() {
+    const contactInput = form.querySelector('input[name="userContact"]');
+    const contactError = document.getElementById("contactError");
+    const contactRegex = /^9[678]\d{8}$/; // Adjust regex based on your requirements
+    if (!contactRegex.test(contactInput.value.trim())) {
+        contactError.textContent = "Phone number must start with 9, followed by 6, 7, or 8, and be 10 digits long.";
+        return false;
+    } else {
+        contactError.textContent = "";
+        return true;
     }
 
-    function validateEmail() {
-        const emailInput = form.querySelector('input[name="userEmail"]');
-        const emailError = document.getElementById("emailError");
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailInput.value.trim())) {
-            emailError.textContent = "Enter a valid email address.";
-            return false;
-        } else {
-            emailError.textContent = "";
-            return true;
-        }
+}
+
+function validateAddress() {
+    const addressInput = form.querySelector('input[name="userAddress"]');
+    const addressError = document.getElementById("addressError");
+    const wordCount = addressInput.value.trim().split(/\s+/).length;
+    if (wordCount <= 3) {
+        addressError.textContent = "Address must contain more than 3 words.";
+        return false;
+    } else {
+        addressError.textContent = "";
+        return true;
+    }
+}
+
+// Validate form on input change
+form.querySelector('input[name="userName"]').addEventListener('input', validateUsername);
+form.querySelector('input[name="userEmail"]').addEventListener('input', validateEmail);
+form.querySelector('input[name="userPassword"]').addEventListener('input', validatePassword);
+form.querySelector('input[name="userContact"]').addEventListener('input', validatePhoneNumber);
+form.querySelector('input[name="userAddress"]').addEventListener('input', validateAddress);
+
+// Validate sign-up
+function validateSignUp() {
+    return validateUsername() && validateEmail() && validatePassword() && validatePhoneNumber() && validateAddress();
+}
+
+// Validate sign-in
+function validateSignIn() {
+    return validateEmail() && validatePassword();
+}
+
+// Add event listener for form submission
+form.addEventListener('submit', function (event) {
+    // Determine if the form is in sign-up or sign-in mode
+    const isSignUpMode = submit_name.getAttribute('name') === 'sign_up';
+
+    // Validate based on the mode
+    let isValid;
+    if (isSignUpMode) {
+        isValid = validateSignUp();
+    } else {
+        isValid = validateSignIn();
     }
 
-    function validatePassword() {
-        const passwordInput = form.querySelector('input[name="userPassword"]');
-        const passwordError = document.getElementById("passwordError");
-        if (passwordInput.value.trim().length < 6) {
-            passwordError.textContent = "Password must be at least 6 characters long.";
-            return false;
-        } else {
-            passwordError.textContent = "";
-            return true;
-        }
+    // If the form is not valid, prevent submission
+    if (!isValid) {
+        event.preventDefault();
     }
-
-    function validatePhoneNumber() {
-        const contactInput = form.querySelector('input[name="userContact"]');
-        const contactError = document.getElementById("contactError");
-        const contactRegex = /^9[678]\d{8}$/;
-        if (!contactRegex.test(contactInput.value.trim())) {
-            contactError.textContent = "Phone number must start with 9, followed by 6, 7, or 8, and be 10 digits long.";
-            return false;
-        } else {
-            contactError.textContent = "";
-            return true;
-        }
-    }
-
-    function validateAddress() {
-        const addressInput = form.querySelector('input[name="userAddress"]');
-        const addressError = document.getElementById("addressError");
-        const wordCount = addressInput.value.trim().split(/\s+/).length;
-        if (wordCount <= 3) {
-            addressError.textContent = "Address must contain more than 3 words.";
-            return false;
-        } else {
-            addressError.textContent = "";
-            return true;
-        }
-    }
-
-    // Validate form on input change
-    form.querySelector('input[name="userName"]').addEventListener('input', validateUsername);
-    form.querySelector('input[name="userEmail"]').addEventListener('input', validateEmail);
-    form.querySelector('input[name="userPassword"]').addEventListener('input', validatePassword);
-    form.querySelector('input[name="userContact"]').addEventListener('input', validatePhoneNumber);
-    form.querySelector('input[name="userAddress"]').addEventListener('input', validateAddress);
-
-    // Validate sign-up
-    function validateSignUp() {
-        return validateUsername() && validateEmail() && validatePassword() && validatePhoneNumber() && validateAddress();
-    }
-
-    // Validate sign-in
-    function validateSignIn() {
-        return validateEmail() && validatePassword();
-    }
-
-    // Add event listener for form submission
-    form.addEventListener('submit', function (event) {
-        // Determine if the form is in sign-up or sign-in mode
-        const isSignUpMode = submit_name.getAttribute('name') === 'sign_up';
-
-        // Validate based on the mode
-        let isValid;
-        if (isSignUpMode) {
-            isValid = validateSignUp();
-        } else {
-            isValid = validateSignIn();
-        }
-
-        // If the form is not valid, prevent submission
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
-});
+});})
