@@ -14,9 +14,9 @@ if (isset($_POST["cart-product"])) {
                     const overlay = document.querySelector('.overlay');
 
                     if (form_box && overlay) {
-                        form_box.classList.add('active'); // Add the active class to show the form
-                        overlay.classList.add('active'); // Show the overlay
-                        document.querySelector('body').classList.add('overflow-hidden'); // Prevent scrolling
+                        form_box.classList.add('active');
+                        overlay.classList.add('active'); 
+                        document.querySelector('body').classList.add('overflow-hidden');
                     }
                 });
             </script>

@@ -25,50 +25,46 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Toggle form
-   // Toggle form
-   let signUpBtn = document.getElementById("signUpBtn");
-   let signInBtn = document.getElementById("signInBtn");
-   let nameField = document.getElementById("nameField");
-   let contactField = document.getElementById("contactField");
-   let addressField = document.getElementById("addressField");
-   let title = document.getElementById("title");
-   let forgetPw = document.getElementById("forgetPw");
-   let submit_name = document.getElementById("form-submit");
-   
-   signInBtn.onclick = function () {
-       // Slide up extra fields for Sign In
-       nameField.style.maxHeight = "0";
-       contactField.style.maxHeight = "0";
-       addressField.style.maxHeight = "0";
-   
-       // Change title and visibility
-       title.innerHTML = "Sign In";
-       forgetPw.style.display = "block"; // Show 'Forget password'
-       signUpBtn.classList.add("disable");
-       signInBtn.classList.remove("disable");
-   
-       // Change the name attribute of the submit button
-       submit_name.setAttribute('name', 'sign_in');
-   }
-   
-   signUpBtn.onclick = function () {
-       // Slide down extra fields for Sign Up
-       nameField.style.maxHeight = "60px"; // Adjust based on field height
-       contactField.style.maxHeight = "60px"; // Adjust based on field height
-       addressField.style.maxHeight = "60px"; // Adjust based on field height
-   
-       // Change title and visibility
-       title.innerHTML = "Sign Up";
-       forgetPw.style.display = "none"; // Hide 'Forget password'
-       signInBtn.classList.add("disable");
-       signUpBtn.classList.remove("disable");
-   
-       // Change the name attribute of the submit button
-       submit_name.setAttribute('name', 'sign_up');
-   }
-   
+    let signUpBtn = document.getElementById("signUpBtn");
+    let signInBtn = document.getElementById("signInBtn");
+    let nameField = document.getElementById("nameField");
+    let contactField = document.getElementById("contactField");
+    let addressField = document.getElementById("addressField");
+    let title = document.getElementById("title");
+    let forgetPw = document.getElementById("forgetPw");
+    let submit_name = document.getElementById("form-submit");
 
+    signInBtn.onclick = function () {
+        // Slide up extra fields for Sign In
+        nameField.style.maxHeight = "0";
+        contactField.style.maxHeight = "0";
+        addressField.style.maxHeight = "0";
 
+        // Change title and visibility
+        title.innerHTML = "Sign In";
+        forgetPw.style.display = "block"; // Show 'Forget password'
+        signUpBtn.classList.add("disable");
+        signInBtn.classList.remove("disable");
+
+        // Change the name attribute of the submit button
+        submit_name.setAttribute('name', 'sign_in');
+    }
+
+    signUpBtn.onclick = function () {
+        // Slide down extra fields for Sign Up
+        nameField.style.maxHeight = "60px"; // Adjust based on field height
+        contactField.style.maxHeight = "60px"; // Adjust based on field height
+        addressField.style.maxHeight = "60px"; // Adjust based on field height
+
+        // Change title and visibility
+        title.innerHTML = "Sign Up";
+        forgetPw.style.display = "none"; // Hide 'Forget password'
+        signInBtn.classList.add("disable");
+        signUpBtn.classList.remove("disable");
+
+        // Change the name attribute of the submit button
+        submit_name.setAttribute('name', 'sign_up');
+    }
 
     const formSubmit = document.getElementById("form-submit");
     const form = document.getElementById("userForm");
@@ -159,12 +155,22 @@ document.addEventListener("DOMContentLoaded", function () {
         return validateEmail() && validatePassword();
     }
 
-    // Add event listeners for button clicks
-    formSubmit.onclick = function () {
-        if (validateSignUp()) {
-            form.submit(); // Submit the form if valid
+    // Add event listener for form submission
+    form.addEventListener('submit', function (event) {
+        // Determine if the form is in sign-up or sign-in mode
+        const isSignUpMode = submit_name.getAttribute('name') === 'sign_up';
+
+        // Validate based on the mode
+        let isValid;
+        if (isSignUpMode) {
+            isValid = validateSignUp();
+        } else {
+            isValid = validateSignIn();
         }
-    };
 
+        // If the form is not valid, prevent submission
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
 });
-

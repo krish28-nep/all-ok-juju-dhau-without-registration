@@ -41,21 +41,22 @@ function search_product()
         // Check if there are any search results
         if (mysqli_num_rows($result_query) == 0) {
             echo "<section class='search-result-section pb-5 mb-sm-5'>
-                    <div class='container'>
-                        <div class='content'>
-                            <h4 class='heading'>No search Results</h4>
-                            <p>There are no products matching your query</p>
-                            <div class='search-product search-result'>
-                                <form action='search.php' method='get'>
-                                    <div class='position-relative d-flex gap-3'>
-                                        <input type='search' name='search_keyword' placeholder='Search...'>
-                                        <input type='submit' name='search_product' class='read-more btn' value='Search'>
-                                    </div>
-                                </form>
-                            </div>
+                <div class='container'>
+                    <div class='content'>
+                        <h4 class='heading'>No search Results</h4>
+                        <p>There are no products matching your query</p>
+                        <div class='search'>
+                            <form action='search.php' method='get' class='search-form'>
+                                <input type='search' class='searchInput' name='search_keyword' placeholder='Search...' />
+                                <button type='submit' class='searchButton'>
+                                    <i class='fa-solid fa-magnifying-glass'></i>
+                                </button>
+                                <div id='suggestionsList' class='suggestions-list'></div>
+                            </form>
                         </div>
                     </div>
-                </section>";
+                </div>
+            </section>";
         } else {
             while ($product = mysqli_fetch_assoc($result_query)) {
 
@@ -75,13 +76,14 @@ function search_product()
                     <div class='content'>
                         <h4 class='heading'>No search Results</h4>
                         <p>Please enter a search keyword.</p>
-                        <div class='search-product search-result'>
-                            <form action='search.php' method='get'>
-                                <div class='position-relative d-flex gap-3'>
-                                    <input type='search' name='search_keyword' placeholder='Search...'>
-                                    <input type='submit' name='search_product' class='read-more btn' value='Search'>
-                                </div>
-                            </form>
+                        <div class='search'>
+                            <form action='search.php' method='get' class='search-form'>
+                                <input type='search' class='searchInput' name='search_keyword' placeholder='Search...' />
+                                <button type='submit' class='searchButton'>
+                                    <i class='fa-solid fa-magnifying-glass'></i>
+                                </button>
+                                <div id='suggestionsList' class='suggestions-list'></div>
+                            </form>     
                         </div>
                     </div>
                 </div>
