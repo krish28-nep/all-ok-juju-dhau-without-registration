@@ -38,6 +38,7 @@ if (isset($_POST["cart-product"])) {
             $insert_query = "INSERT INTO `cart_details` (product_id, userid, option) VALUES ($get_product_id, '$userid', $option)";
             if (mysqli_query($conn, $insert_query)) {
                 echo "<script>alert('Item added to cart successfully');</script>";
+                echo "<script>window.open('index.php', '_self');</script>";
             } else {
                 echo "<script>alert('Error adding item to cart');</script>";
                 echo "<script>console.log('MySQL Error: " . mysqli_error($conn) . "');</script>";

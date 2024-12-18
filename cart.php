@@ -68,7 +68,7 @@ if (mysqli_num_rows($run_cart) > 0) {
         $pro_id = $row_cart['product_id'];
         $option = $row_cart['option']; // This is the specific option for the product
         $image = $row_cart['image_path'];
-        $price = $row_cart['base_price'] * $option;
+        $price = $row_cart['base_price'] ;
         $product_name = $row_cart['title'];
 
         echo "<tr>
@@ -88,7 +88,7 @@ if (mysqli_num_rows($run_cart) > 0) {
                     <span> $option </span>
                 </td>
                 <td class='product-subtotal'>
-                    <span class='price-symbol'>Rs.</span> " . ($price) . "
+                    <span class='price-symbol'>Rs.</span> " . ($price * $option) . "
                 </td>
             </tr>";
         $total += ($price * $option);

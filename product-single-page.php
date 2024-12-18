@@ -2,6 +2,10 @@
 include('header.php');
 include('database/connect.php');
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Handle form submission for adding to cart
 if (isset($_POST["cart-product"])) {
     // Check if the user is logged in
@@ -9,10 +13,9 @@ if (isset($_POST["cart-product"])) {
         echo "<script>alert('Please log in to add items to the cart');</script>";
         echo "
             <script>
-                 document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function () {
                     const form_box = document.querySelector('.form-box');
                     const overlay = document.querySelector('.overlay');
-
                     if (form_box && overlay) {
                         form_box.classList.add('active');
                         overlay.classList.add('active'); 
@@ -44,6 +47,7 @@ if (isset($_POST["cart-product"])) {
         $insert_query = "INSERT INTO `cart_details` (product_id, userid, option) VALUES ($get_product_id, '$userid', $option)";
         if (mysqli_query($conn, $insert_query)) {
             echo "<script>alert('Item added to cart successfully');</script>";
+            echo "<script>window.open('product-single-page.php?id=$get_product_id', '_self');</script>";
         } else {
             echo "<script>alert('Error adding item to cart');</script>";
             echo "<script>console.log('MySQL Error: " . mysqli_error($conn) . "');</script>"; // Log error for debugging
@@ -76,21 +80,21 @@ if (isset($_GET['id'])) {
 <div class="container single-product-page py-5">
     <div class="row">
         <div class="col-md-6">
-            <img src="admin/product_images/<?php echo $product['image_path'] ?>" class="img-cover" alt="<?php echo $product['title'] ?>">
+            <img src="admin/product_images/<?php echo htmlspecialchars($product['image_path']); ?>" class="img-cover" alt="<?php echo htmlspecialchars($product['title']); ?>">
         </div>
         <div class="col-md-6">
-            <h1><?php echo $product['title'] ?></h1>
-            <p><?php echo $product['description'] ?></p>
+            <h1><?php echo htmlspecialchars($product['title']); ?></h1>
+            <p><?php echo htmlspecialchars($product['description']); ?></p>
             <div class="price">
-                <span class="symbol">Rs.</span><?php echo $product['base_price'] ?>
+                <span class="symbol">Rs.</span><span id="current-price" data-base-price="<?php echo number_format($product['base_price'], 2); ?>"><?php echo number_format($product['base_price'], 2); ?></span>
             </div>
             <form action="" method="post">
                 <div class="sizes">
                     <?php foreach ($options as $optionIndex => $option): ?>
                         <div class="size">
-                            <input type="radio" name="liter_<?php echo $optionIndex; ?>" id="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>" 
+                            <input type="radio" name="liter" id="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>" 
                                    value="<?php echo intval($option['option_name']); ?>" 
-                                   onchange="updatePrice(this)" <?php echo $optionIndex === 0 ? 'checked' : ''; ?>>
+                                   onchange="updatePrice(this)" <?php echo $optionIndex === 0 ? 'checked' : ''; ?> >
                             <label for="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>"><?php echo htmlspecialchars($option['option_name']); ?> ltr</label>
                         </div>
                     <?php endforeach; ?>
@@ -101,21 +105,30 @@ if (isset($_GET['id'])) {
         </div>
     </div>
 </div>
+
 <script>
     function updatePrice(selectedSize) {
-        const productDiv = selectedSize.closest('.col-md-6'); // Find the closest parent with the class 'col-md-6'
-        const basePrice = parseFloat(document.querySelector('.price').innerText.replace('Rs.', '').trim()); // Get the base price
-        const literValue = parseInt(selectedSize.value); // Get the selected liter value
-        const newPrice = basePrice * literValue; // Calculate the new price
-        const priceElement = productDiv.querySelector('.price'); // Get the price element to update
-        priceElement.innerText = `Rs. ${newPrice}`; // Update the displayed price
+        // Get the base price from the hidden field
+        const basePrice = parseFloat(document.getElementById("current-price").dataset.basePrice);
+        
+        // Get the selected option value (liter value)
+        const literValue = parseFloat(selectedSize.value);
+        
+        // Calculate the new price based on the selected liter value
+        const newPrice = basePrice * literValue;
+        
+        // Update the price display (without adding "Rs." symbol multiple times)
+        document.getElementById("current-price").innerText = `${newPrice.toFixed(2)}`;
     }
 </script>
+
 <?php
     else:
         echo "<p>Product not found.</p>";
     endif;
-    $stmt->close();
+} else {
+    echo "<p>No product ID specified.</p>";
 }
+
 include('footer.php');
 ?>

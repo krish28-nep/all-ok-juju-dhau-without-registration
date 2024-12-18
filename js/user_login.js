@@ -20,9 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         login_btn.addEventListener("click", toggleForm);
         form_close_btn.addEventListener("click", closeForm);
         overlay.addEventListener("click", closeForm);
-    } else {
-        console.error('Form elements not found.');
-    }
+    } 
 
     // Toggle form
     let signUpBtn = document.getElementById("signUpBtn");

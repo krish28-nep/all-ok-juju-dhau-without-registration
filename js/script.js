@@ -54,7 +54,5 @@ document.addEventListener('DOMContentLoaded', function () {
         if (menuItems.length > 0) {
             menuItems[0].classList.add('active');
         }
-    } else {
-        console.error('No menu items, slider items, or product items found in the DOM.');
-    }
+    } 
 });
