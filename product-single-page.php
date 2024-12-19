@@ -24,7 +24,7 @@ if (isset($_POST["cart-product"])) {
                 });
             </script>
         ";
-        return; // Stop further execution
+        exit; // Stop further execution
     }
 
     // Get product ID and user ID

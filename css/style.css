@@ -135,7 +135,16 @@ nav {
 .sliderImage {
   width: 44vw;
   z-index: 1;
+  transition: transform 0.3s ease;
 }
+
+.sliderImage:hover {
+  transform: scale(1.1);
+ 
+  
+}
+
+
 .slider {
   background-image: url("../image/background.jpg");
   background-size: cover;
@@ -581,7 +590,7 @@ form a{
 }
 
 .product-box a:hover {
-  background-color: #ccc; /* Darker shade for hover state */
+  background-color: #f0f0f0; /* Darker shade for hover state */
   color: #111; /* Keep the text color consistent */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slight shadow effect */
   outline: 2px solid blue; /* Blue outline */

@@ -2,52 +2,70 @@
 include("database/connect.php");
 include("header.php");
 
-$userid = $_SESSION["userid"];
-$cart_query = "SELECT cd.product_id, cd.option, p.image_path, p.base_price, p.title FROM cart_details cd JOIN products p ON cd.product_id = p.product_id WHERE cd.userid='$userid'";
-$run_cart = mysqli_query($conn, $cart_query);
+if (!isset($_SESSION["userid"])) {
+    echo "<script>
+            alert('Please log in to add items to the cart');
+            document.addEventListener('DOMContentLoaded', function () {
+                const form_box = document.querySelector('.form-box');
+                const overlay = document.querySelector('.overlay');
 
-$total = 0;
+                if (form_box && overlay) {
+                    form_box.classList.add('active'); // Show the login form
+                    overlay.classList.add('active'); // Show the overlay
+                    document.querySelector('body').classList.add('overflow-hidden'); // Prevent scrolling
+                }
+            });
+          </script>";
+} else {
+    $userid = $_SESSION["userid"];
+    $cart_query = "SELECT cd.product_id, cd.option, p.image_path, p.base_price, p.title 
+                   FROM cart_details cd 
+                   JOIN products p ON cd.product_id = p.product_id 
+                   WHERE cd.userid=?";
+    
+    $stmt = $conn->prepare($cart_query);
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $run_cart = $stmt->get_result();
+
+    $total = 0;
+}
 
 if (isset($_GET['remove_product'])) {
     $product_id_to_remove = $_GET['remove_product'];
     $product_option_to_remove = $_GET['option']; // Get the selected option to remove
-    if (isset($_GET['confirm_delete'])) {
-        
-        // Check if the option exists for the product before deletion
-        $check_option_query = "SELECT * FROM cart_details WHERE product_id = $product_id_to_remove AND userid = '$userid' AND option = '$product_option_to_remove'";
-        $check_result = mysqli_query($conn, $check_option_query);
 
-        if (mysqli_num_rows($check_result) > 0) {
-            // Delete only the specific option of the product for the current user
-            $sql = "DELETE FROM cart_details WHERE product_id = $product_id_to_remove AND userid = '$userid' AND option = '$product_option_to_remove'";
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                echo "<script>alert('Product option removed successfully')</script>";
-                header("Location: {$_SERVER['PHP_SELF']}");
-                exit();
-            } else {
-                echo "<script>alert('Failed to delete product option.')</script>";
-            }
+    if (isset($_GET['confirm_delete'])) {
+        $delete_query = "DELETE FROM cart_details WHERE product_id=? AND userid=? AND option=?";
+        $stmt = $conn->prepare($delete_query);
+        $stmt->bind_param("iis", $product_id_to_remove, $userid, $product_option_to_remove);
+        
+        if ($stmt->execute()) {
+            echo "<script>alert('Product option removed successfully');</script>";
+            header("Location: {$_SERVER['PHP_SELF']}");
+            exit();
         } else {
-            echo "<script>alert('No matching option found for deletion.')</script>";
+            echo "<script>alert('Failed to delete product option.');</script>";
         }
     }
 }
 
-if (isset($_POST['update_cart'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
     $quantities = $_POST['qty'];
     foreach ($quantities as $product_id => $quantity) {
-        $update_cart_query = "UPDATE cart_details SET option = $quantity WHERE product_id = $product_id AND userid = '$userid'";
-        $update_result = mysqli_query($conn, $update_cart_query);
-        if (!$update_result) {
-            echo "<script>alert('Failed to update quantity.')</script>";
+        $update_cart_query = "UPDATE cart_details SET option=? WHERE product_id=? AND userid=?";
+        $stmt = $conn->prepare($update_cart_query);
+        $stmt->bind_param("iii", $quantity, $product_id, $userid);
+        
+        if (!$stmt->execute()) {
+            echo "<script>alert('Failed to update quantity.');</script>";
         }
     }
     header("Location: {$_SERVER['PHP_SELF']}");
     exit();
 }
 
-if (mysqli_num_rows($run_cart) > 0) {
+if (isset($run_cart) && $run_cart->num_rows > 0) {
     echo "<section class='cart-section padding-top-section'>
             <div class='container'>
                 <form action='' method='post'>
@@ -64,11 +82,11 @@ if (mysqli_num_rows($run_cart) > 0) {
                         </thead>
                         <tbody>";
 
-    while ($row_cart = mysqli_fetch_array($run_cart)) {
+    while ($row_cart = $run_cart->fetch_assoc()) {
         $pro_id = $row_cart['product_id'];
-        $option = $row_cart['option']; // This is the specific option for the product
+        $option = $row_cart['option'];
         $image = $row_cart['image_path'];
-        $price = $row_cart['base_price'] ;
+        $price = $row_cart['base_price'];
         $product_name = $row_cart['title'];
 
         echo "<tr>
@@ -94,8 +112,7 @@ if (mysqli_num_rows($run_cart) > 0) {
         $total += ($price * $option);
     }
 
-    echo "
-    </tbody></table>
+    echo "</tbody></table>
           <div class='cart-collaterals margin-bottom-cart'>
             <div class='row justify-content-end'>
                 <div class='col-sm-6'>
@@ -127,18 +144,17 @@ if (mysqli_num_rows($run_cart) > 0) {
                 <h2 class='heading underline center text-center'>Your shopping cart is empty.</h2>
                 <p class='lead text-center'>Add some products to your cart before proceeding. You can also browse our collection of items or visit our shop page for more options.</p>
             </div>
-        </section>";
+          </section>";
 }
 
-// JavaScript code for quantity validation
 echo "<script>
     function validateQuantity(input, maxQty) {
         if (parseInt(input.value) > maxQty) {
             alert('Cannot exceed available stock (' + maxQty + ')');
-            input.value = maxQty; // Set the quantity to maximum allowed
+            input.value = maxQty;
         }
     }
-    </script>";
+</script>";
 
 include("footer.php");
 ?>
