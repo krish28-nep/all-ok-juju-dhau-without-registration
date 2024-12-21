@@ -72,6 +72,7 @@ include('function/common-function.php');
                         <span class="icon"><a href="cart.php"><i class="fa-solid fa-cart-shopping"><span
                                         class="cart-no"><sup><?php total_product_cart(); ?></sup></span></i></a></span>
                     </li>
+                    <span class="icon"><a href="order_list.php">Your Orders</a></span>
                 </ul>
             </div>
         </div>

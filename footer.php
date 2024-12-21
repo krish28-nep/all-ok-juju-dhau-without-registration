@@ -8,8 +8,8 @@ include("database/connect.php");
         <div class="footerMenu">
             <h1 class="fMenuTitle">About Us</h1>
             <ul class="fList">
-                <li class="fListItem"><a href="#">About us</a></li>
-                <li class="fListItem"><a href="#">Contact us</a></li>
+                <li class="fListItem"><a href="aboutus.php">About us</a></li>
+                <li class="fListItem"><a href="contactus.php">Contact us</a></li>
                 <li class="fListItem"><a href="shop_list.php">shop list</a></li>
             </ul>
         </div>

@@ -133,15 +133,13 @@ nav {
 }
 
 .sliderImage {
-  width: 44vw;
+  width: 45%;
   z-index: 1;
   transition: transform 0.3s ease;
 }
 
 .sliderImage:hover {
-  transform: scale(1.1);
- 
-  
+  transform: scale(1.1); 
 }
 
 
@@ -398,6 +396,9 @@ footer {
   color: #ccc;
   text-decoration: unset;
 }
+.fListItem a:hover {
+  color: #fff;
+  }
 .footerRight {
   flex: 1;
   padding: 50px;
@@ -580,22 +581,22 @@ form a{
   width: 100%;
   object-fit: cover;
 }
-.product-box a {
-  background-color: #111; /* Change this to your desired background color */
-  color: #ccc; /* Adjust text color to contrast with the background */
+
+.product-box {
+  height: 100%;
+  background-color: #f0f0f0; /* Change this to your desired background color */; /* Adjust text color to contrast with the background */
   padding: 10px 20px; /* Add some padding for better visibility */
   text-decoration: none; /* Remove underline from the link */
   display: inline-block; /* Make the link block-level so transform works well */
   border-radius: 5px; /* Optional: rounded corners for the link */
 }
 
-.product-box a:hover {
-  background-color: #f0f0f0; /* Darker shade for hover state */
+.product-box:hover {
+  background-color: #ddd; /* Darker shade for hover state */
   color: #111; /* Keep the text color consistent */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slight shadow effect */
-  outline: 2px solid blue; /* Blue outline */
-  transform: scale(1.1); /* Zoom effect */
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+   
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
 
@@ -610,6 +611,9 @@ form a{
   -webkit-line-clamp: 2;      
   overflow: hidden;            
   text-overflow: ellipsis;        
+}
+.btn-box{
+
 }
 
 
@@ -734,7 +738,19 @@ body {
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-
+.btn-box{
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-color: #111;
+  margin-top: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+.btn-box:hover{
+  background-color: blue;
+}
 .button-link:hover {
   background-color: #0056b3;
 }

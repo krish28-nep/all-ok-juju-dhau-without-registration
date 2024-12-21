@@ -1,4 +1,5 @@
 <?php
+session_start(); // Start the session at the beginning
 include("database/connect.php");
 include("header.php");
 
@@ -21,9 +22,12 @@ if (!isset($_SESSION["userid"])) {
     $cart_query = "SELECT cd.product_id, cd.option, p.image_path, p.base_price, p.title 
                    FROM cart_details cd 
                    JOIN products p ON cd.product_id = p.product_id 
-                   WHERE cd.userid=?";
+                   WHERE cd.userid = ?";
     
     $stmt = $conn->prepare($cart_query);
+    if (!$stmt) {
+        die("Query preparation failed: " . $conn->error);
+    }
     $stmt->bind_param("i", $userid);
     $stmt->execute();
     $run_cart = $stmt->get_result();
@@ -31,38 +35,26 @@ if (!isset($_SESSION["userid"])) {
     $total = 0;
 }
 
-if (isset($_GET['remove_product'])) {
-    $product_id_to_remove = $_GET['remove_product'];
-    $product_option_to_remove = $_GET['option']; // Get the selected option to remove
+if (isset($_GET['remove_product']) && isset($_GET['option'])) {
+    $product_id_to_remove = filter_input(INPUT_GET, 'remove_product', FILTER_VALIDATE_INT);
+    $product_option_to_remove = filter_input(INPUT_GET, 'option', FILTER_SANITIZE_STRING);
 
-    if (isset($_GET['confirm_delete'])) {
-        $delete_query = "DELETE FROM cart_details WHERE product_id=? AND userid=? AND option=?";
+    if ($product_id_to_remove && $product_option_to_remove && isset($_GET['confirm_delete'])) {
+        $delete_query = "DELETE FROM cart_details WHERE product_id = ? AND userid = ? AND option = ?";
         $stmt = $conn->prepare($delete_query);
+        if (!$stmt) {
+            die("Query preparation failed: " . $conn->error);
+        }
         $stmt->bind_param("iis", $product_id_to_remove, $userid, $product_option_to_remove);
         
         if ($stmt->execute()) {
             echo "<script>alert('Product option removed successfully');</script>";
-            header("Location: {$_SERVER['PHP_SELF']}");
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } else {
             echo "<script>alert('Failed to delete product option.');</script>";
         }
     }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
-    $quantities = $_POST['qty'];
-    foreach ($quantities as $product_id => $quantity) {
-        $update_cart_query = "UPDATE cart_details SET option=? WHERE product_id=? AND userid=?";
-        $stmt = $conn->prepare($update_cart_query);
-        $stmt->bind_param("iii", $quantity, $product_id, $userid);
-        
-        if (!$stmt->execute()) {
-            echo "<script>alert('Failed to update quantity.');</script>";
-        }
-    }
-    header("Location: {$_SERVER['PHP_SELF']}");
-    exit();
 }
 
 if (isset($run_cart) && $run_cart->num_rows > 0) {
@@ -84,14 +76,15 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
 
     while ($row_cart = $run_cart->fetch_assoc()) {
         $pro_id = $row_cart['product_id'];
-        $option = $row_cart['option'];
-        $image = $row_cart['image_path'];
+        $option = htmlspecialchars($row_cart['option'], ENT_QUOTES, 'UTF-8');
+        $image = htmlspecialchars($row_cart['image_path'], ENT_QUOTES, 'UTF-8');
         $price = $row_cart['base_price'];
-        $product_name = $row_cart['title'];
+        $product_name = htmlspecialchars($row_cart['title'], ENT_QUOTES, 'UTF-8');
 
         echo "<tr>
                 <td class='product-remove'>
-                    <a href='{$_SERVER['PHP_SELF']}?remove_product=$pro_id&option=$option&confirm_delete' onclick='return confirm(\"Are you sure you want to delete this product option?\")'>x</a>
+                    <a href='" . $_SERVER['PHP_SELF'] . "?remove_product=$pro_id&option=$option&confirm_delete' 
+                       onclick='return confirm(\"Are you sure you want to delete this product option?\")'>Cancel</a>
                 </td>
                 <td class='product-thumbnail' style='width: 30%;'>
                     <img src='./admin/product_images/$image' alt='$product_name'>
@@ -130,7 +123,7 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
                         </tbody>
                     </table>
                     <div class='proceed-to-checkout'>
-                        <a href='./user_area/order.php?user_id=$userid' class='btn read-more checkout-btn'>Proceed to checkout</a>
+                        <a href='checkout.php?user_id=$userid' class='btn read-more checkout-btn'>Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -142,7 +135,8 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
     echo "<section class='section-gap'>
             <div class='container'>
                 <h2 class='heading underline center text-center'>Your shopping cart is empty.</h2>
-                <p class='lead text-center'>Add some products to your cart before proceeding. You can also browse our collection of items or visit our shop page for more options.</p>
+                <p class='lead text-center'>Add some products to your cart before proceeding. 
+                   <a href='shop_list.php' class='btn btn-primary'>Browse Shop</a></p>
             </div>
           </section>";
 }
