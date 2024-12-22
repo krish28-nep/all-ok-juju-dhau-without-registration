@@ -23,10 +23,11 @@ if (!isset($_SESSION["userid"])) {
 $userid = $_SESSION["userid"];
 $total = 0;
 
-// Fetch cart items for the user
-$cart_query = "SELECT cd.product_id, cd.option_id, p.image_path, p.base_price, p.title 
+// Fetch cart items for the user, including option_name from product_options table
+$cart_query = "SELECT cd.product_id, cd.option_id, p.image_path, p.base_price, p.title, po.option_name 
                FROM cart_details cd 
                JOIN products p ON cd.product_id = p.product_id 
+               JOIN product_options po ON cd.option_id = po.option_id
                WHERE cd.userid=?";
 $stmt = $conn->prepare($cart_query);
 $stmt->bind_param("i", $userid);
@@ -42,7 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
     // Loop through cart items and calculate total
     while ($cart_item = $cart_items->fetch_assoc()) {
-        $subtotal = $cart_item['base_price'] * $cart_item['option_id'];
+        // Calculate subtotal using base_price and option_name (which represents quantity)
+        $subtotal = $cart_item['base_price'] * $cart_item['option_name'];
         $total += $subtotal;
     }
 
@@ -112,11 +114,12 @@ if ($cart_items->num_rows > 0) {
     // Reset total to recalculate after fetching cart items
     $total = 0;
     while ($row = $cart_items->fetch_assoc()) {
-        $subtotal = $row['base_price'] * $row['option_id'];
+        // Calculate subtotal using base_price and option_name (which represents quantity)
+        $subtotal = $row['base_price'] * $row['option_name'];
         $total += $subtotal;
         echo "<tr>
                 <td>" . htmlspecialchars($row['title']) . "</td>
-                <td>" . htmlspecialchars($row['option_id']) . " Ltr</td>
+                <td>" . htmlspecialchars($row['option_name']) . " Ltr</td>
                 <td>Rs. " . number_format($subtotal, 2) . "</td>
               </tr>";
     }
