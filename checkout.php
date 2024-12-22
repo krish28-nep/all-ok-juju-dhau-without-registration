@@ -24,7 +24,7 @@ $userid = $_SESSION["userid"];
 $total = 0;
 
 // Fetch cart items for the user
-$cart_query = "SELECT cd.product_id, cd.option, p.image_path, p.base_price, p.title 
+$cart_query = "SELECT cd.product_id, cd.option_id, p.image_path, p.base_price, p.title 
                FROM cart_details cd 
                JOIN products p ON cd.product_id = p.product_id 
                WHERE cd.userid=?";
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
     // Loop through cart items and calculate total
     while ($cart_item = $cart_items->fetch_assoc()) {
-        $subtotal = $cart_item['base_price'] * $cart_item['option'];
+        $subtotal = $cart_item['base_price'] * $cart_item['option_id'];
         $total += $subtotal;
     }
 
@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
             // Insert order details for each cart item
             while ($cart_item = $cart_items->fetch_assoc()) {
                 $product_id = $cart_item['product_id'];
-                $option = $cart_item['option'];
+                $option_id = $cart_item['option_id'];
                 $price = $cart_item['base_price'];
                 
-                $order_detail_query = "INSERT INTO order_details (order_id, product_id, option, price) VALUES (?, ?, ?, ?)";
+                $order_detail_query = "INSERT INTO order_details (order_detail_id, order_id, product_id, option_id, price) VALUES (?, ?, ?, ?, ?)";
                 $detail_stmt = $conn->prepare($order_detail_query);
-                $detail_stmt->bind_param("iiid", $order_id, $product_id, $option, $price);
+                $detail_stmt->bind_param("iiiid", $order_detail_id, $order_id, $product_id, $option_id, $price);
                 $detail_stmt->execute();
             }
 
@@ -112,11 +112,11 @@ if ($cart_items->num_rows > 0) {
     // Reset total to recalculate after fetching cart items
     $total = 0;
     while ($row = $cart_items->fetch_assoc()) {
-        $subtotal = $row['base_price'] * $row['option'];
+        $subtotal = $row['base_price'] * $row['option_id'];
         $total += $subtotal;
         echo "<tr>
                 <td>" . htmlspecialchars($row['title']) . "</td>
-                <td>" . htmlspecialchars($row['option']) . " Ltr</td>
+                <td>" . htmlspecialchars($row['option_id']) . " Ltr</td>
                 <td>Rs. " . number_format($subtotal, 2) . "</td>
               </tr>";
     }

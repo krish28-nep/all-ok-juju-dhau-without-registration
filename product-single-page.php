@@ -26,29 +26,38 @@ if (isset($_POST["cart-product"])) {
         $get_product_id = (int) $_POST['product_id']; // Ensure product ID is an integer
         $userid = mysqli_real_escape_string($conn, $_SESSION["userid"]); // Sanitize the user ID
 
-        // Get the selected option (liter value) from the form
-        $selected_option_name = key($_POST); // Gets the first key in the posted data
-        $option = intval($_POST[$selected_option_name]); // Convert the selected value to an integer
+        // Get the selected option (option_id) from the form
+        $option_id = intval($_POST['liter']); // Get the selected option_id directly
 
-        // Check if the product with the selected option is already in the cart
-        $sql = "SELECT * FROM `cart_details` WHERE userid = '$userid' AND product_id = $get_product_id AND option = $option";
-        $result = mysqli_query($conn, $sql);
+        // Check if the option_id exists in the product_options table
+        $check_option_query = "SELECT * FROM `product_options` WHERE `option_id` = $option_id";
+        $check_option_result = mysqli_query($conn, $check_option_query);
 
+        if (mysqli_num_rows($check_option_result) > 0) {
+            // The option exists in the product_options table
 
+            // Check if the product with the selected option is already in the cart
+            $sql = "SELECT * FROM `cart_details` WHERE userid = '$userid' AND product_id = $get_product_id AND option_id = $option_id";
+            $result = mysqli_query($conn, $sql);
 
-        if (mysqli_num_rows($result) > 0) {
-            // Product with the selected option is already in the cart
-            echo "<script>alert('Item already in cart');</script>";
-        } else {
-            // Insert the product into the cart with the selected option
-            $insert_query = "INSERT INTO `cart_details` (product_id, userid, option) VALUES ($get_product_id, '$userid', $option)";
-            if (mysqli_query($conn, $insert_query)) {
-                echo "<script>alert('Item added to cart successfully');</script>";
-                echo "<script>window.open('product-single-page.php?id=$get_product_id', '_self');</script>";
+            if (mysqli_num_rows($result) > 0) {
+                // Product with the selected option is already in the cart
+                echo "<script>alert('Item already in cart');</script>";
             } else {
-                echo "<script>alert('Error adding item to cart');</script>";
-                echo "<script>console.log('MySQL Error: " . mysqli_error($conn) . "');</script>"; // Log error for debugging
+                // Insert the product into the cart with the selected option
+                $insert_query = "INSERT INTO `cart_details` (product_id, userid, option_id) VALUES ($get_product_id, '$userid', $option_id)";
+                if (mysqli_query($conn, $insert_query)) {
+                    echo "<script>alert('Item added to cart successfully');</script>";
+                    echo "<script>window.open('product-single-page.php?id=$get_product_id', '_self');</script>";
+                } else {
+                    echo "<script>alert('Error adding item to cart');</script>";
+                    echo "<script>console.log('MySQL Error: " . mysqli_error($conn) . "');</script>"; // Log error for debugging
+                }
             }
+
+        } else {
+            // The option_id does not exist in the product_options table
+            echo "<script>alert('Invalid option selected');</script>";
         }
     }
 }
@@ -92,12 +101,14 @@ if (isset($_GET['id'])) {
                         <div class="sizes">
                             <?php foreach ($options as $optionIndex => $option): ?>
                                 <div class="size">
-                                    <input type="radio" name="liter"
-                                        id="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>"
-                                        value="<?php echo intval($option['option_name']); ?>" onchange="updatePrice(this)" <?php echo $optionIndex === 0 ? 'checked' : ''; ?>>
-                                    <label
-                                        for="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>"><?php echo htmlspecialchars($option['option_name']); ?>
-                                        ltr</label>
+                                    <input type="radio" name="liter" 
+                                           id="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>" 
+                                           value="<?php echo htmlspecialchars($option['option_id']); ?>" 
+                                           data-option-name="<?php echo htmlspecialchars($option['option_name']); ?>" 
+                                           onchange="updatePrice(this)" <?php echo $optionIndex === 0 ? 'checked' : ''; ?>>
+                                    <label for="option_<?php echo $optionIndex; ?>_<?php echo htmlspecialchars($option['option_id']); ?>">
+                                        <?php echo htmlspecialchars($option['option_name']); ?> ltr
+                                    </label>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -113,11 +124,11 @@ if (isset($_GET['id'])) {
                 // Get the base price from the hidden field
                 const basePrice = parseFloat(document.getElementById("current-price").dataset.basePrice);
 
-                // Get the selected option value (liter value)
-                const literValue = parseFloat(selectedSize.value);
+                // Get the selected option's price from the data attribute
+                const selectedOptionPrice = parseFloat(selectedSize.getAttribute("data-option-name"));
 
-                // Calculate the new price based on the selected liter value
-                const newPrice = basePrice * literValue;
+                // Calculate the new price based on the selected option's price
+                const newPrice = basePrice * selectedOptionPrice;
 
                 // Update the price display (without adding "Rs." symbol multiple times)
                 document.getElementById("current-price").innerText = `${newPrice.toFixed(2)}`;

@@ -21,7 +21,7 @@ include('function/common-function.php');
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/style.css" />
 
-    <title>Duju-Dhau</title>
+    <title>Juju-Dhau</title>
 </head>
 
 

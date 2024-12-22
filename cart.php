@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start the session at the beginning
+session_start();
 include("database/connect.php");
 include("header.php");
 
@@ -19,9 +19,12 @@ if (!isset($_SESSION["userid"])) {
           </script>";
 } else {
     $userid = $_SESSION["userid"];
-    $cart_query = "SELECT cd.product_id, cd.option, p.image_path, p.base_price, p.title 
+
+    // Fetch cart details with option names
+    $cart_query = "SELECT cd.product_id, cd.option_id, p.image_path, p.base_price, p.title, po.option_name 
                    FROM cart_details cd 
                    JOIN products p ON cd.product_id = p.product_id 
+                   JOIN product_options po ON cd.option_id = po.option_id 
                    WHERE cd.userid = ?";
     
     $stmt = $conn->prepare($cart_query);
@@ -35,12 +38,12 @@ if (!isset($_SESSION["userid"])) {
     $total = 0;
 }
 
-if (isset($_GET['remove_product']) && isset($_GET['option'])) {
+if (isset($_GET['remove_product']) && isset($_GET['option_id'])) {
     $product_id_to_remove = filter_input(INPUT_GET, 'remove_product', FILTER_VALIDATE_INT);
-    $product_option_to_remove = filter_input(INPUT_GET, 'option', FILTER_SANITIZE_STRING);
+    $product_option_to_remove = filter_input(INPUT_GET, 'option_id', FILTER_SANITIZE_STRING);
 
     if ($product_id_to_remove && $product_option_to_remove && isset($_GET['confirm_delete'])) {
-        $delete_query = "DELETE FROM cart_details WHERE product_id = ? AND userid = ? AND option = ?";
+        $delete_query = "DELETE FROM cart_details WHERE product_id = ? AND userid = ? AND option_id = ?";
         $stmt = $conn->prepare($delete_query);
         if (!$stmt) {
             die("Query preparation failed: " . $conn->error);
@@ -76,14 +79,14 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
 
     while ($row_cart = $run_cart->fetch_assoc()) {
         $pro_id = $row_cart['product_id'];
-        $option = htmlspecialchars($row_cart['option'], ENT_QUOTES, 'UTF-8');
+        $option_name = htmlspecialchars($row_cart['option_name'], ENT_QUOTES, 'UTF-8'); // Get option_name
         $image = htmlspecialchars($row_cart['image_path'], ENT_QUOTES, 'UTF-8');
         $price = $row_cart['base_price'];
         $product_name = htmlspecialchars($row_cart['title'], ENT_QUOTES, 'UTF-8');
 
         echo "<tr>
                 <td class='product-remove'>
-                    <a href='" . $_SERVER['PHP_SELF'] . "?remove_product=$pro_id&option=$option&confirm_delete' 
+                    <a href='" . $_SERVER['PHP_SELF'] . "?remove_product=$pro_id&option_id=" . $row_cart['option_id'] . "&confirm_delete' 
                        onclick='return confirm(\"Are you sure you want to delete this product option?\")'>Cancel</a>
                 </td>
                 <td class='product-thumbnail' style='width: 30%;'>
@@ -96,13 +99,13 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
                     <span class='price-symbol'>Rs.</span> $price
                 </td>
                 <td class='product-quantity'>
-                    <span> $option </span>
+                    <span>$option_name</span>
                 </td>
                 <td class='product-subtotal'>
-                    <span class='price-symbol'>Rs.</span> " . ($price * $option) . "
+                    <span class='price-symbol'>Rs.</span> " . ($price * (float) $option_name) . "
                 </td>
             </tr>";
-        $total += ($price * $option);
+        $total += ($price * (float) $option_name);
     }
 
     echo "</tbody></table>
@@ -140,15 +143,6 @@ if (isset($run_cart) && $run_cart->num_rows > 0) {
             </div>
           </section>";
 }
-
-echo "<script>
-    function validateQuantity(input, maxQty) {
-        if (parseInt(input.value) > maxQty) {
-            alert('Cannot exceed available stock (' + maxQty + ')');
-            input.value = maxQty;
-        }
-    }
-</script>";
 
 include("footer.php");
 ?>

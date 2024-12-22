@@ -18,13 +18,14 @@ if (!$userid) {
     exit();
 }
 
-// Fetch the order details
+// Fetch the order details with option_name from product_options
 $order_query = "
     SELECT o.order_id, o.total_amount, o.address, o.payment_method, o.order_date, 
-           od.product_id, od.option, od.price, p.title, p.image_path
+           od.product_id, od.option_id, od.price, p.title, p.image_path, po.option_name
     FROM orders o
     JOIN order_details od ON o.order_id = od.order_id
     JOIN products p ON od.product_id = p.product_id
+    JOIN product_options po ON od.option_id = po.option_id
     WHERE o.order_id = ? AND o.userid = ?";
 
 $stmt = $conn->prepare($order_query);
@@ -65,16 +66,16 @@ echo "<section class='order-success-section padding-top-section'>
 $total = 0;
 do {
     $product_name = htmlspecialchars($order_details['title']);
-    $option = $order_details['option'];
+    $option_name = htmlspecialchars($order_details['option_name']); // Get option name from product_options
     $price = $order_details['price'];
-    $subtotal = $price * $option;
+    $subtotal = $price * $option_name; // Assuming option_id represents a quantity or multiplier
     $total += $subtotal;
     $image_path = htmlspecialchars($order_details['image_path']);
 
     echo "<tr>
             <td><img src='./admin/product_images/$image_path' alt='$product_name' class='img-fluid' style='max-width: 100px;'></td>
             <td>$product_name</td>
-            <td>$option Ltr</td>
+            <td>$option_name Ltr</td>
             <td>Rs. " . number_format($price, 2) . "</td>
             <td>Rs. " . number_format($subtotal, 2) . "</td>
           </tr>";
