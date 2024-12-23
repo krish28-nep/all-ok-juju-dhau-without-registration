@@ -26,7 +26,8 @@
             </div>
             <div class="input-field">
                 <i class="fa-solid fa-key"></i>
-                <input type="password" name="userPassword" placeholder="Password" />
+                <input type="password" id="userPassword" name="userPassword" placeholder="Password" />
+                <i class="fa fa-eye" id="togglePassword" aria-hidden="true"></i>
                 <div class="error-message" id="passwordError"></div>
             </div>
             <div class="input-field" id="contactField">
@@ -39,8 +40,7 @@
                 <input type="text" name="userAddress" placeholder="Address" />
                 <div class="error-message" id="addressError"></div>
             </div>
-            <p id="forgetPw">Forget password? <a href="#">Click Here</a></p>
-            <button type="submit" id="form-submit" name="sign_up" >Submit</button>
+            <button type="submit" id="form-submit" name="sign_up">Submit</button>
         </div>
     </form>
 </div>

@@ -567,6 +567,15 @@ form a{
 .overflow-hidden{
   overflow: hidden !important;
 }
+#togglePassword{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  cursor: pointer;
+
+
+}
 .slider-list{
   padding: 15px 0;
   background-color: #111;
