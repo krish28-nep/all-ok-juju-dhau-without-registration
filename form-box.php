@@ -9,7 +9,7 @@
     </span>
     <div class="btn-field">
         <button type="button" name="sign_up" id="signUpBtn">Sign Up</button>
-        <button type="button" name="sign_in" class="disable" id="signInBtn">Sign In</button>
+        <button type="button" name="sign_in" class="disable" id="signInBtn">Log In</button>
     </div>
     <h2 id="title">Sign Up</h2>
     <form id="userForm" action="login-register.php" method="post">

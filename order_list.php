@@ -81,7 +81,7 @@ if (isset($_GET['delete_order_id'])) {
 
 // Fetch all orders for the logged-in user
 $order_query = "
-    SELECT o.order_id, o.total_amount, o.order_date, o.payment_method, 
+    SELECT o.order_id, o.total_amount, o.order_date, 
            (SELECT COUNT(*) FROM order_details od WHERE od.order_id = o.order_id) AS item_count
     FROM orders o
     WHERE o.userid = ?
@@ -113,7 +113,7 @@ if ($order_result->num_rows > 0) {
     while ($row = $order_result->fetch_assoc()) {
         $order_id = $row['order_id'];
         $order_date = htmlspecialchars($row['order_date']);
-        $payment_method = htmlspecialchars($row['payment_method']);
+        $payment_method = "Cash on Delivery";
         $item_count = $row['item_count'];
         $total_amount = number_format($row['total_amount'], 2);
 

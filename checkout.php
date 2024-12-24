@@ -54,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
     // Proceed with placing the order if there are items in the cart
     if ($cart_items->num_rows > 0) {
-        $order_query = "INSERT INTO orders (userid, total_amount, address, payment_method) VALUES (?, ?, ?, ?)";
+        $order_query = "INSERT INTO orders (userid, total_amount, address) VALUES (?, ?, ?)";
         $order_stmt = $conn->prepare($order_query);
-        $order_stmt->bind_param("idss", $userid, $total, $address, $payment_method);
+        $order_stmt->bind_param("ids", $userid, $total, $address);
 
         if ($order_stmt->execute()) {
             $order_id = $conn->insert_id;

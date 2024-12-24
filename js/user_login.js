@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let contactField = document.getElementById("contactField");
     let addressField = document.getElementById("addressField");
     let title = document.getElementById("title");
-    let forgetPw = document.getElementById("forgetPw");
     let submit_name = document.getElementById("form-submit");
 
     signInBtn.onclick = function () {
@@ -53,8 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         addressField.style.maxHeight = "0";
 
         // Change title and visibility
-        title.innerHTML = "Sign In";
-        forgetPw.style.display = "block"; // Show 'Forget password'
+        title.innerHTML = "Log In";
         signUpBtn.classList.add("disable");
         signInBtn.classList.remove("disable");
 
@@ -70,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Change title and visibility
         title.innerHTML = "Sign Up";
-        forgetPw.style.display = "none"; // Hide 'Forget password'
         signInBtn.classList.add("disable");
         signUpBtn.classList.remove("disable");
 

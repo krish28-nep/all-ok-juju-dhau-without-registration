@@ -20,7 +20,7 @@ if (!$userid) {
 
 // Fetch the order details with option_name from product_options
 $order_query = "
-    SELECT o.order_id, o.total_amount, o.address, o.payment_method, o.order_date, 
+    SELECT o.order_id, o.total_amount, o.address, o.order_date, 
            od.product_id, od.option_id, od.price, p.title, p.image_path, po.option_name
     FROM orders o
     JOIN order_details od ON o.order_id = od.order_id
@@ -42,7 +42,7 @@ if ($order_result->num_rows === 0) {
 // Fetch the first row for delivery details
 $order_details = $order_result->fetch_assoc();
 $address = htmlspecialchars($order_details['address']);
-$payment_method = htmlspecialchars($order_details['payment_method']);
+$payment_method = "Cash on Delivery";
 $order_date = htmlspecialchars($order_details['order_date']);
 
 echo "<section class='order-success-section padding-top-section'>

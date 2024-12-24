@@ -61,7 +61,7 @@ include('function/common-function.php');
                                     echo '<li><a href="user_profile.php" class="text">Profile</a></li>';
                                     echo '<li><a href="logout.php" class="text">Logout</a></li>';
                                 } else {
-                                    echo '<li><button class="login-btn">Login</button></li>';
+                                    echo '<li><button class="login-btn">Login | Register</button></li>';
                                 }
                                 ?>
 
