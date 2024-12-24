@@ -24,8 +24,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <div class="slider">
     <div class="sliderWrapper" id="sliderWrapper">
         <?php foreach ($products as $index => $product): ?>
-            <div class="sliderItem" style="--bg-color: <?php echo htmlspecialchars($product['background_color']); ?>;"
-                data-index="<?php echo $index; ?>">
+            <div class="sliderItem">
                 <img src="admin/product_images/<?php echo htmlspecialchars($product['image_path']); ?>"
                     alt="<?php echo htmlspecialchars($product['title']); ?>" class="sliderImage">
                 <div class="slideBg"></div>

@@ -6,14 +6,13 @@ if (isset($_POST['insert_product'])) {
     $title = $_POST['title'];
     $base_price = $_POST['base_price'];
     $description = $_POST['description'];
-    $background_color = $_POST['background_color'];
 
     $img = $_FILES['img']['name'];
     $img_temp = $_FILES['img']['tmp_name'];
     move_uploaded_file($img_temp, "./product_images/$img");
 
     // Insert product
-    $sql = "INSERT INTO `products` (`list_title`, `title`, `base_price`, `description`, `image_path`, `background_color`, `date_added`, `product_options`) VALUES ('$list_title', '$title', '$base_price', '$description', '$img', '$background_color', NOW(), NULL)";
+    $sql = "INSERT INTO `products` (`list_title`, `title`, `base_price`, `description`, `image_path`, `date_added`, `product_options`) VALUES ('$list_title', '$title', '$base_price', '$description', '$img', NOW(), NULL)";
 
     $res = mysqli_query($conn, $sql);
     if (!$res) {
@@ -63,11 +62,6 @@ include('header.php');
             <label for="img">Image <span class="required">*</span></label>
             <input type="file" name="img" required class="form-control">
             <small id="img_error" class="text-danger"></small>
-        </div>
-        <div class="form-group">
-            <label for="background_color">Background Color</label>
-            <input type="text" id="background_color" name="background_color" class="form-control" placeholder="e.g., green">
-            <small id="background_color_error" class="text-danger"></small>
         </div>
         <div class="form-group">
     <label for="options">Options</label>

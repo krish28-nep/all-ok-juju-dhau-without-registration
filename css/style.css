@@ -144,7 +144,7 @@ nav {
 
 
 .slider {
-  background-image: url("../image/background.jpg");
+  background-image: url("../image/background.png");
   background-size: cover;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
   overflow: hidden;
@@ -186,13 +186,13 @@ nav {
   height: 750px;
   border-radius: 50%;
   position: absolute;
-  background-color: var(--bg-color);
+  background-color: #111;
 }
 .sliderTitle {
   position: absolute;
   top: 10%;
   right: 10%;
-  color: white;
+  color: #111;
   font-size: 55px;
   font-weight: 900;
   z-index: 1;
@@ -208,7 +208,7 @@ nav {
   font-weight: 300;
   border: 2px solid grey;
   z-index: 1;
-  color: var(--bg-color);
+  color: #111;
 }
 .buyButton {
   position: absolute;
