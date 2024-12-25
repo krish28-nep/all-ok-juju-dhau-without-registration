@@ -135,18 +135,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    function validateAddress() {
-        const addressInput = form.querySelector('input[name="userAddress"]');
-        const addressError = document.getElementById("addressError");
-        const wordCount = addressInput.value.trim().split(/\s+/).length;
-        if (wordCount <= 3) {
-            addressError.textContent = "Address must contain more than 3 words.";
-            return false;
-        } else {
-            addressError.textContent = "";
-            return true;
-        }
-    }
+    // function validateAddress() {
+    //     const addressInput = form.querySelector('input[name="userAddress"]');
+    //     const addressError = document.getElementById("addressError");
+    //     const wordCount = addressInput.value.trim().split(/\s+/).length;
+    //     if (wordCount <= 3) {
+    //         addressError.textContent = "Address must contain more than 3 words.";
+    //         return false;
+    //     } else {
+    //         addressError.textContent = "";
+    //         return true;
+    //     }
+    // }
 
     // Validate form on input change
     form.querySelector('input[name="userName"]').addEventListener('input', validateUsername);
